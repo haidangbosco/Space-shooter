@@ -1,6 +1,7 @@
 import pygame,random
 import pdb
 from copy import *
+import numpy
 from pygame import *
 
 red=(255,0,0)
@@ -83,7 +84,7 @@ class NightRider(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.x = x_pos
         self.y = y_pos
-        self.onscreen_x = copy(self.x)
+        self.onscreen_x = 60
         self.onscreen_y = copy(self.y)
         self.kill = False
         self.explode = False
@@ -97,7 +98,7 @@ class NightRider(pygame.sprite.Sprite):
         self.y = temp if temp <= 400 and temp >= 0 else self.y
         self.onscreen_y = self.y
 
-    def MoveBackAndFord(self,distanceX=1):
+    def MoveFordward(self,distanceX=1):
         self.x -=distanceX
 
     def GetRect(self):
@@ -114,7 +115,6 @@ class NightRider(pygame.sprite.Sprite):
     def update(self):
         # self.rect = self.rect.clamp(screen.get_rect())
         if self.explode == False:
-            self.onscreen_x = copy(self.x) if self.x < 250 else 250
             self.onscreen_y = copy(self.y)
             screen.blit(self.imgs[self.index_img],(self.onscreen_x,self.y))
             self.GetRect()
@@ -141,7 +141,6 @@ class MainGame(object):
         self.camera_offset = 60
         self.keys = {"up_key": False,
         "down_key": False,
-        "left_key": False,
         "right_key": False,
         "a_key":False}
         while (True):
@@ -157,8 +156,6 @@ class MainGame(object):
                         self.SetHoldKey("down_key")
                     elif event.key == pygame.K_RIGHT:
                         self.SetHoldKey("right_key")
-                    elif event.key == pygame.K_LEFT:
-                        self.SetHoldKey("left_key")
                     elif event.key == pygame.K_a:
                         self.SetHoldKey("a_key")
 
@@ -169,8 +166,6 @@ class MainGame(object):
                         self.keys["down_key"] = False
                     elif event.key == pygame.K_RIGHT:
                         self.keys["right_key"] = False
-                    elif event.key == pygame.K_LEFT:
-                        self.keys["left_key"] = False
                     elif event.key == pygame.K_a:
                         self.keys["a_key"] = False
 
@@ -191,15 +186,12 @@ class MainGame(object):
             if self.keys["down_key"]:
                 self.ride.MoveUpAndDown(2)
             if self.keys["right_key"]:
-                self.ride.MoveBackAndFord(-2)
+                self.ride.MoveFordward(-2)
                 move_from_kill_beam = -2
-            if self.keys["left_key"]:
-                self.ride.MoveBackAndFord(1)
-                move_from_kill_beam = 1
             if self.keys["a_key"]:
                 self.ride.ShootBullet(self.bullet_gr)
         else:
-            self.ride.MoveBackAndFord(-2)
+            self.ride.MoveFordward(-2)
             move_from_kill_beam = -2
 
         self.ScrollScreen(self.current_sprite)
