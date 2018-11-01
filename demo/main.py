@@ -60,7 +60,8 @@ class KillBeam(pygame.sprite.Sprite):
         self.rect = kill_beam_img.get_rect()
 
     def update(self,distance=0):
-        self.x = (self.x + 1 + distance) if self.x > -400 else -400
+        self.x = (self.x + 1 + distance) if (self.x + 1 + distance) > -200 else -200
+        print(self.x)
         screen.blit(self.img,(self.x,self.y))
         self.GetRect()
 
